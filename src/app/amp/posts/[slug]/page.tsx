@@ -3,16 +3,17 @@ import { notFound } from 'next/navigation';
 import PostAMP from '@/page-components/PostAMP';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 // Generate metadata for AMP post pages
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   
   try {
-    const res = await fetch(`${apiBaseUrl}/posts/slug/${params.slug}`, {
+    const res = await fetch(`${apiBaseUrl}/posts/slug/${slug}`, {
       next: { revalidate: 300 }
     });
     
@@ -81,7 +82,8 @@ async function fetchAMPPostData(slug: string) {
 }
 
 export default async function AMPPostPage({ params }: Props) {
-  const data = await fetchAMPPostData(params.slug);
+  const { slug } = await params;
+  const data = await fetchAMPPostData(slug);
   
   if (!data) {
     notFound();
