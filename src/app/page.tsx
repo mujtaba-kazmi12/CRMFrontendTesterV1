@@ -73,7 +73,7 @@ async function fetchHomePageData() {
         cache: 'no-store' // Disable cache for build time
       }).catch(err => {
         console.error('SSR: Posts fetch failed:', err.message);
-        return { ok: false, json: () => Promise.resolve({ data: [] }) };
+        return { ok: false, status: 500, json: () => Promise.resolve({ data: [] }) } as Response;
       }),
       fetch(`${apiBaseUrl}/categories`, { 
         next: { 
@@ -87,7 +87,7 @@ async function fetchHomePageData() {
         cache: 'no-store' // Disable cache for build time
       }).catch(err => {
         console.error('SSR: Categories fetch failed:', err.message);
-        return { ok: false, json: () => Promise.resolve([]) };
+        return { ok: false, status: 500, json: () => Promise.resolve([]) } as Response;
       }),
       fetch(`${apiBaseUrl}/tags`, { 
         next: { 
@@ -101,7 +101,7 @@ async function fetchHomePageData() {
         cache: 'no-store' // Disable cache for build time
       }).catch(err => {
         console.error('SSR: Tags fetch failed:', err.message);
-        return { ok: false, json: () => Promise.resolve([]) };
+        return { ok: false, status: 500, json: () => Promise.resolve([]) } as Response;
       }),
     ]);
 
