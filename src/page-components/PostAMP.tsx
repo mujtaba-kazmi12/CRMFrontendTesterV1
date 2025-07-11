@@ -63,7 +63,7 @@ export default function PostAMP({ post, categories }: PostAMPProps) {
             </a>
             <button 
               className="menu-toggle"
-              on="tap:sidebar.toggle"
+              {...({ on: "tap:sidebar.toggle" } as any)}
               role="button"
               tabIndex={0}
             >
@@ -79,7 +79,7 @@ export default function PostAMP({ post, categories }: PostAMPProps) {
           <span className="logo">Menu</span>
           <button 
             className="sidebar-close"
-            on="tap:sidebar.close"
+            {...({ on: "tap:sidebar.close" } as any)}
             role="button"
             tabIndex={0}
           >

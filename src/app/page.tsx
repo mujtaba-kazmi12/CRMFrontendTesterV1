@@ -130,7 +130,7 @@ export default async function HomePage() {
   const { posts, categories, tags, pagination } = await fetchHomePageData();
   
   // Check if we should redirect to AMP
-  const shouldRedirect = shouldRedirectToAMP();
+  const shouldRedirect = await shouldRedirectToAMP();
   const ampUrl = getAMPUrl('/');
   
   return (

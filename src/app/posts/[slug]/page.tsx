@@ -3,9 +3,9 @@ import { PostView } from '@/components/posts/PostView';
 import { PostViewSSR } from '@/components/posts/PostViewSSR';
 
 interface PostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Fetch post data from API
@@ -34,7 +34,7 @@ async function fetchPostData(slug: string) {
 
 // Generate metadata using actual post data from database
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   
   // Fetch the actual post data
   const post = await fetchPostData(slug);
@@ -186,7 +186,7 @@ async function fetchPostSSRData(slug: string) {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   
   // Fetch post data for SSR
   const postSSRData = await fetchPostSSRData(slug);

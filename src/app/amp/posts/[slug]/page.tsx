@@ -4,7 +4,6 @@ import PostAMP from '@/page-components/PostAMP';
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Generate metadata for AMP post pages

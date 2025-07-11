@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 
-export function isMobileDevice(): boolean {
-  const headersList = headers();
+export async function isMobileDevice(): Promise<boolean> {
+  const headersList = await headers();
   const userAgent = headersList.get('user-agent') || '';
   
   // Common mobile user agent patterns
@@ -10,13 +10,13 @@ export function isMobileDevice(): boolean {
   return mobileRegex.test(userAgent);
 }
 
-export function shouldRedirectToAMP(): boolean {
-  const headersList = headers();
+export async function shouldRedirectToAMP(): Promise<boolean> {
+  const headersList = await headers();
   const userAgent = headersList.get('user-agent') || '';
   const acceptHeader = headersList.get('accept') || '';
   
   // Check if it's a mobile device
-  const isMobile = isMobileDevice();
+  const isMobile = await isMobileDevice();
   
   // Check if it's not a bot/crawler
   const isBot = /bot|crawler|spider|crawling/i.test(userAgent);
@@ -50,8 +50,8 @@ export function getAMPUrl(currentPath: string): string {
   return `${baseUrl}/amp`;
 }
 
-export function getMobileUserAgentInfo() {
-  const headersList = headers();
+export async function getMobileUserAgentInfo() {
+  const headersList = await headers();
   const userAgent = headersList.get('user-agent') || '';
   
   // Detect specific mobile browsers/devices
@@ -68,6 +68,6 @@ export function getMobileUserAgentInfo() {
     isChrome,
     isSafari,
     isFirefox,
-    isMobile: isMobileDevice(),
+    isMobile: await isMobileDevice(),
   };
 }
