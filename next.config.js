@@ -114,10 +114,14 @@ const nextConfig = {
 
   // Rewrite backend URLs to appear as frontend URLs
   async rewrites() {
+    // Only apply rewrites in production, not during build
+    if (process.env.NODE_ENV !== 'production') {
+      return [];
+    }
+    
     const backendBaseUrl = 'https://be.handicap-internatioanl.fr';
 
     return [
-
       // Posts Sitemap rewrite - all posts with images
       {
         source: '/post-sitemap.xml',

@@ -50,6 +50,16 @@ async function fetchHomePageData() {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     console.log('SSR: Fetching data from:', apiBaseUrl);
     
+    if (!apiBaseUrl) {
+      console.warn('SSR: API base URL not configured, returning empty data');
+      return {
+        posts: [],
+        categories: [],
+        tags: [],
+        pagination: { currentPage: 1, totalPages: 1 },
+      };
+    }
+    
     const [postsResponse, categoriesResponse, tagsResponse] = await Promise.all([
       fetch(`${apiBaseUrl}/posts?page=1&limit=20`, { // Fetch only the first page
         next: { 
@@ -59,7 +69,11 @@ async function fetchHomePageData() {
         headers: {
           'User-Agent': 'NextJS-SSR/1.0',
           'Content-Type': 'application/json'
-        }
+        },
+        cache: 'no-store' // Disable cache for build time
+      }).catch(err => {
+        console.error('SSR: Posts fetch failed:', err.message);
+        return { ok: false, json: () => Promise.resolve({ data: [] }) };
       }),
       fetch(`${apiBaseUrl}/categories`, { 
         next: { 
@@ -69,7 +83,11 @@ async function fetchHomePageData() {
         headers: {
           'User-Agent': 'NextJS-SSR/1.0',
           'Content-Type': 'application/json'
-        }
+        },
+        cache: 'no-store' // Disable cache for build time
+      }).catch(err => {
+        console.error('SSR: Categories fetch failed:', err.message);
+        return { ok: false, json: () => Promise.resolve([]) };
       }),
       fetch(`${apiBaseUrl}/tags`, { 
         next: { 
@@ -79,7 +97,11 @@ async function fetchHomePageData() {
         headers: {
           'User-Agent': 'NextJS-SSR/1.0',
           'Content-Type': 'application/json'
-        }
+        },
+        cache: 'no-store' // Disable cache for build time
+      }).catch(err => {
+        console.error('SSR: Tags fetch failed:', err.message);
+        return { ok: false, json: () => Promise.resolve([]) };
       }),
     ]);
 
@@ -129,8 +151,14 @@ async function fetchHomePageData() {
 export default async function HomePage() {
   const { posts, categories, tags, pagination } = await fetchHomePageData();
   
-  // Check if we should redirect to AMP
-  const shouldRedirect = await shouldRedirectToAMP();
+  // Check if we should redirect to AMP (with error handling for build time)
+  let shouldRedirect = false;
+  try {
+    shouldRedirect = await shouldRedirectToAMP();
+  } catch (error) {
+    console.warn('AMP redirect check failed during build:', error);
+    shouldRedirect = false;
+  }
   const ampUrl = getAMPUrl('/');
   
   return (

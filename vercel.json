@@ -1,0 +1,39 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "functions": {
+    "src/pages/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/post-sitemap.xml",
+      "destination": "https://be.handicap-internatioanl.fr/post-sitemap.xml"
+    },
+    {
+      "source": "/categories-sitemap.xml", 
+      "destination": "https://be.handicap-internatioanl.fr/categories-sitemap.xml"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://be.handicap-internatioanl.fr/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://be.handicap-internatioanl.fr/robots.txt"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=300, stale-while-revalidate=60"
+        }
+      ]
+    }
+  ]
+}
